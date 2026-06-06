@@ -1,0 +1,30 @@
+name: DevOps CI Pipeline
+
+on:
+  pull_request:
+    branches: [ main, master, principal ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Linter
+      run: npm run lint
+
+    - name: Formatter
+      run: npm run prettier
+
+    - name: Test
+      run: npm run test
+
+    - name: Build
+      run: npm run build
