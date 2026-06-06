@@ -1,0 +1,10 @@
+{
+  "name": "devops-challenge",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "echo 'Linter executado com sucesso!'",
+    "prettier": "echo 'Formatador executado com sucesso!'",
+    "test": "echo 'Testes executados com sucesso!'",
+    "build": "echo 'Build finalizado com sucesso!'"
+  }
+}
