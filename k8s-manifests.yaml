@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+  namespace: production
+type: Opaque
+data:
+  # O valor 'On3H1torL3sS' convertido para Base64 exigido pelo teste
+  MY_SECRET: T24zSDF0b3JMM3NT
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-app
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-app
+  template:
+    metadata:
+      labels:
+        app: devops-app
+    spec:
+      containers:
+      - name: app-container
+        image: nginx:alpine # Usando uma imagem leve padrão para o teste rodar localmente
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MY_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: MY_SECRET
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-service
+  namespace: production
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: devops-app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devops-ingress
+  namespace: production
+spec:
+  rules:
+  - host: devops-challenge.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-service
+            port:
+              number: 8080
